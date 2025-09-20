@@ -9,15 +9,39 @@ variable (P Q R : Prop)
 
 theorem doubleneg_intro :
   P → ¬ ¬ P  := by
-  sorry
+  intro hp;
+  intro hnp;
+  apply hnp hp;
 
 theorem doubleneg_elim :
   ¬ ¬ P → P  := by
-  sorry
+  intro hnnp;
+  by_cases lem : P;
+  {
+    assumption;
+  }
+  {
+    have  boom := hnnp lem;
+    contradiction;
+  }
 
 theorem doubleneg_law :
   ¬ ¬ P ↔ P  := by
-  sorry
+  constructor;
+  {
+    intro hnnp;
+    by_cases lem : P;
+    {
+      assumption;
+    }
+    {
+      have  boom := hnnp lem;
+      contradiction;
+    }
+  }
+  intro hp;
+  intro hnp;
+  apply hnp hp;
 
 
 ------------------------------------------------
@@ -26,11 +50,28 @@ theorem doubleneg_law :
 
 theorem disj_comm :
   (P ∨ Q) → (Q ∨ P)  := by
-  sorry
+  intro hpouq;
+  rcases hpouq with (hp|hq);
+  {
+    right;
+    exact hp;
+  }
+  {
+    left;
+    exact hq;
+  }
 
 theorem conj_comm :
   (P ∧ Q) → (Q ∧ P)  := by
-  sorry
+  intro hpeq;
+  rcases hpeq with ⟨hp , hq⟩;
+  constructor;
+  {
+    exact hq;
+  }
+  {
+    exact hp;
+  }
 
 
 ------------------------------------------------
@@ -39,11 +80,29 @@ theorem conj_comm :
 
 theorem impl_as_disj_converse :
   (¬ P ∨ Q) → (P → Q)  := by
-  sorry
+  intro npouq;
+  intro hp;
+  rcases npouq with (hnp | hq);
+  {
+    have := hnp hp;
+    contradiction;
+  }
+  {
+    exact hq;
+  }
 
 theorem disj_as_impl :
   (P ∨ Q) → (¬ P → Q)  := by
-  sorry
+  intro pouq;
+  intro hnp;
+  rcases pouq with (hp | hq);
+  {
+    have := hnp hp;
+    contradiction;
+  }
+  {
+    exact hq;
+  }
 
 
 ------------------------------------------------
@@ -52,11 +111,18 @@ theorem disj_as_impl :
 
 theorem impl_as_contrapositive :
   (P → Q) → (¬ Q → ¬ P)  := by
-  sorry
+  intro pimplyq;
+  intro hnq;
+  intro hp;
+  have q := pimplyq hp;
+  have := hnq q;
+  contradiction;
 
 theorem impl_as_contrapositive_converse :
   (¬ Q → ¬ P) → (P → Q)  := by
-  sorry
+  intro nqimplynp;
+  intro hp;
+  sorry;
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬ Q → ¬ P)  := by
