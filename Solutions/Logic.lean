@@ -122,7 +122,15 @@ theorem impl_as_contrapositive_converse :
   (¬ Q → ¬ P) → (P → Q)  := by
   intro nqimplynp;
   intro hp;
-  sorry;
+  by_cases lem : Q;
+  {
+    exact lem;
+  }
+  {
+    have nq := nqimplynp lem;
+    have := nq hp;
+    contradiction;
+  }
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬ Q → ¬ P)  := by
@@ -138,7 +146,15 @@ theorem contrapositive_law :
   {
     intro nqimplynp;
     intro hp;
-    sorry;
+    by_cases lem : Q;
+    {
+      exact lem;
+    }
+    {
+      have nq := nqimplynp lem;
+      have := nq hp;
+      contradiction;
+    }
   }
 
 
@@ -281,15 +297,92 @@ theorem demorgan_conj :
 
 theorem demorgan_conj_converse :
   (¬ Q ∨ ¬ P) → ¬ (P ∧ Q)  := by
-  sorry;
+  intro nqounp;
+  intro peq;
+  rcases peq with ⟨ p, q ⟩
+  rcases nqounp with (nq | np)
+  {
+    apply nq q;
+  }
+  {
+    apply np p;
+  }
 
 theorem demorgan_conj_law :
   ¬ (P ∧ Q) ↔ (¬ Q ∨ ¬ P)  := by
-  sorry
+  constructor;
+  {
+    intro n_peq;
+    by_cases lemp : P;
+    {
+      by_cases lemq : Q;
+      constructor;
+      {
+        intro q;
+        apply n_peq;
+        constructor;
+        {
+          exact lemp;
+        }
+        {
+          exact lemq;
+        }
+      }
+      {
+        left;
+        exact lemq;
+      }
+    }
+    {
+      right;
+      exact lemp;
+    }
+  }
+  {
+    intro nqounp;
+    intro peq;
+    rcases peq with ⟨ p, q ⟩
+    rcases nqounp with (nq | np)
+    {
+      apply nq q;
+    }
+    {
+      apply np p;
+    }
+
+  }
 
 theorem demorgan_disj_law :
   ¬ (P ∨ Q) ↔ (¬ P ∧ ¬ Q)  := by
-  sorry
+  constructor;
+  {
+    intro n_pouq;
+    constructor;
+    {
+      intro p;
+      apply n_pouq;
+      left;
+      exact p;
+    }
+    {
+      intro q;
+      apply n_pouq;
+      right;
+      exact q;
+    }
+  }
+  {
+    intro npenq;
+    intro pouq;
+    rcases npenq with ⟨ np , nq ⟩
+    rcases pouq with (p | q)
+    {
+      apply np p;
+    }
+    {
+      apply nq q;
+    }
+  }
 
 
 ------------------------------------------------
@@ -298,19 +391,113 @@ theorem demorgan_disj_law :
 
 theorem distr_conj_disj :
   P ∧ (Q ∨ R) → (P ∧ Q) ∨ (P ∧ R)  := by
-  sorry
+  intro pe_qour;
+  rcases pe_qour with ⟨p , qour ⟩
+  rcases qour with ( q | r )
+  {
+    left;
+    constructor;
+    {
+      exact p;
+    }
+    {
+      exact q;
+    }
+  }
+  {
+    right;
+    constructor;
+    {
+      exact p;
+    }
+    {
+      exact r;
+    }
+  }
 
 theorem distr_conj_disj_converse :
   (P ∧ Q) ∨ (P ∧ R) → P ∧ (Q ∨ R)  := by
-  sorry
+  intro peq_ou_per;
+  rcases peq_ou_per with (peq | per);
+  {
+    rcases peq with ⟨p , q ⟩
+    constructor;
+    {
+      exact p;
+    }
+    {
+      left;
+      exact q;
+    }
+  }
+  {
+    rcases per with ⟨p , r ⟩
+    constructor;
+    {
+      exact p;
+    }
+    {
+      right;
+      exact r;
+    }
+  }
 
 theorem distr_disj_conj :
   P ∨ (Q ∧ R) → (P ∨ Q) ∧ (P ∨ R)  := by
-  sorry
+  intro pou_qer;
+  constructor;
+  {
+    rcases pou_qer with (p | qer);
+    {
+      left;
+      exact p;
+    }
+    {
+      rcases qer with ⟨ q, r ⟩
+      right;
+      exact q;
+    }
+  }
+  {
+    rcases pou_qer with (p | qer);
+    {
+      left;
+      exact p;
+    }
+    {
+      rcases qer with ⟨ q, r ⟩
+      right;
+      exact r;
+    }
+  }
 
 theorem distr_disj_conj_converse :
   (P ∨ Q) ∧ (P ∨ R) → P ∨ (Q ∧ R)  := by
-  sorry
+  intro pouq_e_pour;
+  rcases pouq_e_pour with ⟨ pouq, pour ⟩
+  rcases pouq with ( p | q)
+  {
+    left;
+    exact p;
+  }
+  {
+    rcases pour with (p | r)
+    {
+      left;
+      exact p;
+    }
+    {
+      right;
+      constructor;
+      {
+        exact q;
+      }
+      {
+        exact r;
+      }
+    }
+
+  }
 
 
 ------------------------------------------------
@@ -319,11 +506,25 @@ theorem distr_disj_conj_converse :
 
 theorem curry_prop :
   ((P ∧ Q) → R) → (P → (Q → R))  := by
-  sorry
+  intro peq_emr;
+  intro p;
+  intro q;
+  apply peq_emr;
+  constructor;
+  {
+    exact p;
+  }
+  {
+    exact q;
+  }
 
 theorem uncurry_prop :
   (P → (Q → R)) → ((P ∧ Q) → R)  := by
-  sorry
+  intro pem_qemr;
+  intro peq;
+  rcases peq with ⟨ p, q ⟩
+  have r := pem_qemr p q
+  exact r;
 
 
 ------------------------------------------------
@@ -332,7 +533,8 @@ theorem uncurry_prop :
 
 theorem impl_refl :
   P → P  := by
-  sorry
+  intro p;
+  exact p;
 
 
 ------------------------------------------------
@@ -341,19 +543,29 @@ theorem impl_refl :
 
 theorem weaken_disj_right :
   P → (P ∨ Q)  := by
-  sorry
+  intro p;
+  left;
+  exact p;
 
 theorem weaken_disj_left :
   Q → (P ∨ Q)  := by
-  sorry
+  intro q;
+  right;
+  exact q;
+
+-- have nome_hipotese : hipotese := by
 
 theorem weaken_conj_right :
   (P ∧ Q) → P  := by
-  sorry
+  intro peq;
+  rcases peq with ⟨p, q ⟩
+  exact p;
 
 theorem weaken_conj_left :
   (P ∧ Q) → Q  := by
-  sorry
+  intro peq;
+  rcases peq with ⟨p, q ⟩
+  exact q;
 
 
 ------------------------------------------------
@@ -362,11 +574,36 @@ theorem weaken_conj_left :
 
 theorem disj_idem :
   (P ∨ P) ↔ P  := by
-  sorry
+  constructor;
+  {
+    intro poup;
+    rcases poup with (p | p)
+    exact p;
+  }
+  {
+    intro p;
+    left;
+    exact p;
+  }
 
 theorem conj_idem :
   (P ∧ P) ↔ P := by
-  sorry
+  constructor;
+  {
+    intro pep;
+    rcases pep with ⟨ p, p ⟩
+    exact p;
+  }
+  {
+    intro p;
+    constructor;
+    {
+      exact p;
+    }
+    {
+      exact p;
+    }
+  }
 
 
 ------------------------------------------------
@@ -375,11 +612,13 @@ theorem conj_idem :
 
 theorem false_bottom :
   False → P := by
-  sorry
+  intro x;
+  contradiction;
 
 theorem true_top :
   P → True  := by
-  sorry
+  intro p;
+  trivial;
 
 
 end propositional
