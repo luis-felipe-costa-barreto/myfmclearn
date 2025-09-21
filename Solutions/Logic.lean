@@ -126,7 +126,20 @@ theorem impl_as_contrapositive_converse :
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬ Q → ¬ P)  := by
-  sorry
+  constructor;
+  {
+    intro pimplyq;
+    intro hnq;
+    intro hp;
+    have q := pimplyq hp;
+    have := hnq q;
+    contradiction;
+  }
+  {
+    intro nqimplynp;
+    intro hp;
+    sorry;
+  }
 
 
 ------------------------------------------------
@@ -135,7 +148,17 @@ theorem contrapositive_law :
 
 theorem lem_irrefutable :
   ¬ ¬ (P ∨ ¬ P)  := by
-  sorry
+  intro n_pounp;
+  apply n_pounp;
+  by_cases lem : P;
+  {
+    left;
+    exact lem;
+  }
+  {
+    right;
+    exact lem;
+  }
 
 
 ------------------------------------------------
@@ -144,7 +167,14 @@ theorem lem_irrefutable :
 
 theorem peirce_law_weak :
   ((P → Q) → P) → ¬ ¬ P  := by
-  sorry
+  intro pemq_emp;
+  intro np;
+  apply np;
+  apply pemq_emp;
+  intro p;
+  have := np p;
+  contradiction;
+
 
 
 ------------------------------------------------
@@ -153,7 +183,7 @@ theorem peirce_law_weak :
 
 theorem impl_linear :
   (P → Q) ∨ (Q → P)  := by
-  sorry
+  sorry;
 
 
 ------------------------------------------------
@@ -162,11 +192,29 @@ theorem impl_linear :
 
 theorem disj_as_negconj :
   P ∨ Q → ¬ (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro pouq;
+  intro npenq;
+  rcases npenq with ⟨ np, nq ⟩
+  rcases pouq with (p | q)
+  {
+    apply np p;
+  }
+  {
+    apply nq q;
+  }
 
 theorem conj_as_negdisj :
   P ∧ Q → ¬ (¬ P ∨ ¬ Q)  := by
-  sorry
+  intro peq;
+  intro npounq;
+  rcases peq with ⟨ p, q ⟩
+  rcases npounq with (np | nq)
+  {
+    apply np p;
+  }
+  {
+    apply nq q;
+  }
 
 
 ------------------------------------------------
@@ -175,19 +223,65 @@ theorem conj_as_negdisj :
 
 theorem demorgan_disj :
   ¬ (P ∨ Q) → (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro n_pouq;
+  constructor;
+  {
+    intro p;
+    apply n_pouq;
+    left;
+    exact p;
+  }
+  {
+    intro q;
+    apply n_pouq;
+    right;
+    exact q;
+  }
 
 theorem demorgan_disj_converse :
   (¬ P ∧ ¬ Q) → ¬ (P ∨ Q)  := by
-  sorry
+  intro npenq;
+  intro pouq;
+  rcases npenq with ⟨ np , nq ⟩
+  rcases pouq with (p | q)
+  {
+    apply np p;
+  }
+  {
+    apply nq q;
+  }
 
 theorem demorgan_conj :
   ¬ (P ∧ Q) → (¬ Q ∨ ¬ P)  := by
-  sorry
+  intro n_peq;
+  by_cases lemp : P;
+  {
+    by_cases lemq : Q;
+    constructor;
+    {
+      intro q;
+      apply n_peq;
+      constructor;
+      {
+        exact lemp;
+      }
+      {
+        exact lemq;
+      }
+    }
+    {
+      left;
+      exact lemq;
+    }
+  }
+  {
+    right;
+    exact lemp;
+  }
 
 theorem demorgan_conj_converse :
   (¬ Q ∨ ¬ P) → ¬ (P ∧ Q)  := by
-  sorry
+  sorry;
 
 theorem demorgan_conj_law :
   ¬ (P ∧ Q) ↔ (¬ Q ∨ ¬ P)  := by
