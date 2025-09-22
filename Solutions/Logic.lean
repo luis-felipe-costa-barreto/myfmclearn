@@ -199,7 +199,18 @@ theorem peirce_law_weak :
 
 theorem impl_linear :
   (P → Q) ∨ (Q → P)  := by
-  sorry;
+  by_cases lemp: P;
+  {
+    right;
+    intro q;
+    exact lemp;
+  }
+  {
+    left;
+    intro p;
+    have := lemp p;
+    contradiction;
+  }
 
 
 ------------------------------------------------
@@ -553,8 +564,6 @@ theorem weaken_disj_left :
   right;
   exact q;
 
--- have nome_hipotese : hipotese := by
-
 theorem weaken_conj_right :
   (P ∧ Q) → P  := by
   intro peq;
@@ -578,7 +587,12 @@ theorem disj_idem :
   {
     intro poup;
     rcases poup with (p | p)
-    exact p;
+    {
+      exact p;
+    }
+    {
+      exact p;
+    }
   }
   {
     intro p;
@@ -628,36 +642,86 @@ end propositional
 section predicate
 
 variable (U : Type)
-variable (P Q : U → Type)
+variable (P Q : U → Prop)
 
 
 ------------------------------------------------
 -- De Morgan laws for ∃,∀
 ------------------------------------------------
 
+-- have nome_hipotese : hipotese := by
+
 theorem demorgan_exists :
   ¬ (∃ x, P x) → (∀ x, ¬ P x)  := by
-  sorry
+  intro h;
+  intro x;
+  intro pdex;
+  have ha_xtqpdex : (∃ x, P x) := by
+    apply Exists.intro x pdex;
+  apply h;
+  exact ha_xtqpdex;
 
 theorem demorgan_exists_converse :
   (∀ x, ¬ P x) → ¬ (∃ x, P x)  := by
-  sorry
+  intro ha;
+  intro hb;
+  obtain ⟨ x, pdex ⟩ := hb;
+  apply ha x;
+  exact pdex;
 
 theorem demorgan_forall :
   ¬ (∀ x, P x) → (∃ x, ¬ P x)  := by
-  sorry
+  intro h;
+  have prova : (∀ x, P x) := by
+    intro x;
+    sorry;
+  have := h prova;
+  contradiction;
+
 
 theorem demorgan_forall_converse :
   (∃ x, ¬ P x) → ¬ (∀ x, P x)  := by
-  sorry
+  intro ha;
+  intro hb;
+  obtain ⟨ x, npdex ⟩ := ha;
+  have pdex := hb x;
+  apply npdex;
+  exact pdex;
 
 theorem demorgan_forall_law :
   ¬ (∀ x, P x) ↔ (∃ x, ¬ P x)  := by
-  sorry
+  constructor;
+  {
+    sorry;
+  }
+  {
+    intro ha;
+    intro hb;
+    obtain ⟨ x, npdex ⟩ := ha;
+    have pdex := hb x;
+    apply npdex;
+    exact pdex;
+  }
 
 theorem demorgan_exists_law :
   ¬ (∃ x, P x) ↔ (∀ x, ¬ P x)  := by
-  sorry
+  constructor;
+  {
+    intro h;
+    intro x;
+    intro pdex;
+    have ha_xtqpdex : (∃ x, P x) := by
+      apply Exists.intro x pdex;
+    apply h;
+    exact ha_xtqpdex;
+  }
+  {
+    intro ha;
+    intro hb;
+    obtain ⟨ x, pdex ⟩ := hb;
+    apply ha x;
+    exact pdex;
+  }
 
 
 ------------------------------------------------
