@@ -564,6 +564,8 @@ theorem weaken_disj_left :
   right;
   exact q;
 
+-- have nome_hipotese : hipotese := by
+
 theorem weaken_conj_right :
   (P ∧ Q) → P  := by
   intro peq;
@@ -671,12 +673,8 @@ theorem demorgan_exists_converse :
 
 theorem demorgan_forall :
   ¬ (∀ x, P x) → (∃ x, ¬ P x)  := by
-  intro h;
-  have prova : (∀ x, P x) := by
-    intro x;
-    sorry;
-  have := h prova;
-  contradiction;
+  intro ha;
+  sorry;
 
 
 theorem demorgan_forall_converse :
@@ -730,27 +728,58 @@ theorem demorgan_exists_law :
 
 theorem exists_as_neg_forall :
   (∃ x, P x) → ¬ (∀ x, ¬ P x)  := by
-  sorry
+  intro ha;
+  intro hb;
+  obtain ⟨ x, pdex ⟩ := ha;
+  apply hb x;
+  exact pdex;
 
 theorem forall_as_neg_exists :
   (∀ x, P x) → ¬ (∃ x, ¬ P x)  := by
-  sorry
+  intro ha;
+  intro hb;
+  obtain ⟨ x, npdex ⟩ := hb;
+  have pdex := ha x;
+  apply npdex pdex;
 
 theorem forall_as_neg_exists_converse :
   ¬ (∃ x, ¬ P x) → (∀ x, P x)  := by
-  sorry
+  intro ha;
+  intro x;
+  sorry;
 
 theorem exists_as_neg_forall_converse :
   ¬ (∀ x, ¬ P x) → (∃ x, P x)  := by
-  sorry
+  intro ha;
+  sorry;
 
 theorem forall_as_neg_exists_law :
   (∀ x, P x) ↔ ¬ (∃ x, ¬ P x)  := by
-  sorry
+  constructor;
+  {
+    intro ha;
+    intro hb;
+    obtain ⟨ x, npdex ⟩ := hb;
+    have pdex := ha x;
+    apply npdex pdex;
+  }
+  {
+    sorry;
+  }
 
 theorem exists_as_neg_forall_law :
   (∃ x, P x) ↔ ¬ (∀ x, ¬ P x)  := by
-  sorry
+  constructor;
+  {
+    intro ha;
+    intro hb;
+    obtain ⟨ x, pdex ⟩ := ha;
+    apply hb x;
+    exact pdex;
+  }
+  {
+    sorry;
+  }
 
 
 ------------------------------------------------
@@ -759,27 +788,94 @@ theorem exists_as_neg_forall_law :
 
 theorem exists_conj_as_conj_exists :
   (∃ x, P x ∧ Q x) → (∃ x, P x) ∧ (∃ x, Q x)  := by
-  sorry
+  intro ha;
+  obtain ⟨ x, pdexeqdex ⟩ := ha;
+  rcases pdexeqdex with ⟨ pdex, qdex ⟩
+  constructor;
+  {
+    apply Exists.intro x pdex;
+  }
+  {
+    apply Exists.intro x qdex;
+  }
+
 
 theorem exists_disj_as_disj_exists :
   (∃ x, P x ∨ Q x) → (∃ x, P x) ∨ (∃ x, Q x)  := by
-  sorry
+  intro ha;
+  obtain ⟨ x, pdexouqdex ⟩ := ha;
+  rcases pdexouqdex with (pdex | qdex)
+  {
+    left;
+    apply Exists.intro x pdex;
+  }
+  {
+    right;
+    apply Exists.intro x qdex;
+  }
 
 theorem exists_disj_as_disj_exists_converse :
   (∃ x, P x) ∨ (∃ x, Q x) → (∃ x, P x ∨ Q x)  := by
-  sorry
+  intro ha;
+  rcases ha with ( xpdex | xqdex)
+  {
+    obtain ⟨ x, pdex ⟩ := xpdex;
+    apply Exists.intro x;
+    left;
+    exact pdex;
+  }
+  {
+    obtain ⟨ x, qdex ⟩ := xqdex;
+    apply Exists.intro x;
+    right;
+    exact qdex;
+  }
 
 theorem forall_conj_as_conj_forall :
   (∀ x, P x ∧ Q x) → (∀ x, P x) ∧ (∀ x, Q x)  := by
-  sorry
+  intro ha;
+  constructor;
+  {
+    intro x;
+    have pdexeqdex := ha x;
+    rcases pdexeqdex with ⟨ pdex, qdex ⟩
+    exact pdex;
+  }
+  {
+    intro x;
+    have pdexeqdex := ha x;
+    rcases pdexeqdex with ⟨ pdex, qdex ⟩
+    exact qdex;
+  }
 
 theorem forall_conj_as_conj_forall_converse :
   (∀ x, P x) ∧ (∀ x, Q x) → (∀ x, P x ∧ Q x)  := by
-  sorry
+  intro ha;
+  intro x;
+  rcases ha with ⟨ xpdex, xqdex ⟩
+  have pdex := xpdex x;
+  have qdex := xqdex x;
+  constructor;
+  {
+    exact pdex;
+  }
+  {
+    exact qdex;
+  }
 
 theorem forall_disj_as_disj_forall_converse :
   (∀ x, P x) ∨ (∀ x, Q x) → (∀ x, P x ∨ Q x)  := by
-  sorry
+  intro ha;
+  intro x;
+  rcases ha with ( xpdex | xqdex)
+  {
+    left;
+    apply xpdex x;
+  }
+  {
+    right;
+    apply xqdex x;
+  }
 
 
 end predicate
