@@ -673,9 +673,15 @@ theorem demorgan_exists_converse :
 
 theorem demorgan_forall :
   ¬ (∀ x, P x) → (∃ x, ¬ P x)  := by
-  intro ha;
-  sorry;
-
+  intro h;
+  apply Classical.byContradiction;
+  intro hcon;
+  apply h;
+  intro x;
+  apply Classical.not_not.mp;
+  intro npdex;
+  apply hcon;
+  apply Exists.intro x npdex;
 
 theorem demorgan_forall_converse :
   (∃ x, ¬ P x) → ¬ (∀ x, P x)  := by
@@ -690,7 +696,15 @@ theorem demorgan_forall_law :
   ¬ (∀ x, P x) ↔ (∃ x, ¬ P x)  := by
   constructor;
   {
-    sorry;
+    intro h;
+    apply Classical.byContradiction;
+    intro hcon;
+    apply h;
+    intro x;
+    apply Classical.not_not.mp;
+    intro npdex;
+    apply hcon;
+    apply Exists.intro x npdex;
   }
   {
     intro ha;
@@ -746,12 +760,24 @@ theorem forall_as_neg_exists_converse :
   ¬ (∃ x, ¬ P x) → (∀ x, P x)  := by
   intro ha;
   intro x;
-  sorry;
+  apply Classical.byContradiction;
+  intro hcon;
+  have prova : (∃ x, ¬ P x) := by
+    apply Exists.intro x hcon;
+  contradiction;
+
+
 
 theorem exists_as_neg_forall_converse :
   ¬ (∀ x, ¬ P x) → (∃ x, P x)  := by
   intro ha;
-  sorry;
+  apply Classical.byContradiction;
+  intro hcon;
+  apply ha;
+  intro x;
+  intro pdex;
+  apply hcon;
+  apply Exists.intro x pdex;
 
 theorem forall_as_neg_exists_law :
   (∀ x, P x) ↔ ¬ (∃ x, ¬ P x)  := by
@@ -764,7 +790,13 @@ theorem forall_as_neg_exists_law :
     apply npdex pdex;
   }
   {
-    sorry;
+    intro ha;
+    intro x;
+    apply Classical.byContradiction;
+    intro hcon;
+    have prova : (∃ x, ¬ P x) := by
+      apply Exists.intro x hcon;
+    contradiction;
   }
 
 theorem exists_as_neg_forall_law :
@@ -778,7 +810,14 @@ theorem exists_as_neg_forall_law :
     exact pdex;
   }
   {
-    sorry;
+    intro ha;
+    apply Classical.byContradiction;
+    intro hcon;
+    apply ha;
+    intro x;
+    intro pdex;
+    apply hcon;
+    apply Exists.intro x pdex;
   }
 
 
