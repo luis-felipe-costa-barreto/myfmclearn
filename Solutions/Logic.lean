@@ -896,7 +896,7 @@ variable (D : U → Prop)
 -- D x: «x drinks»
 theorem drinker :
   ∃ p, (D p → ∀ x, D x)  := by
-  sorry
+  sorry;
 
 ------------------------------------------------
 --  Russell's paradox
@@ -910,7 +910,12 @@ variable (S : U → U → Prop)
 -- S x y: «x shaves y»
 theorem russell :
   ¬ ∃ b, ∀ x, (S b x ↔ ¬ S x x)  := by
-  sorry
+  intro ha;
+  obtain ⟨ b, hb ⟩ := ha;
+  have hc := hb b;
+  rcases hc with ⟨ hd, he ⟩
+  sorry;
+
 
 
 end bonus
